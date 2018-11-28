@@ -1,0 +1,67 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Animate Eyeball</title>
+	<style>
+		* {box-sizing:border-box;}
+		.eye {position: absolute; width: 100px; height: 100px; border: 5px solid #000; border-radius: 50%; top: 50px;}
+		.eye-left {left: 50px;}
+		.eye-right {left: 170px;}
+		.eye-ball {position: absolute; width: 30px; height: 30px; background: #000; border-radius: 50%; top: 85px;}
+		.eye-ball-left {left: 85px;}
+		.eye-ball-right {left: 205px;}
+	</style>
+</head>
+<body>
+	<div class="eye eye-left" id="left-eye"></div>
+	<div class="eye eye-right" id="right-eye"></div>
+	<div class="eye-ball eye-ball-left" id="left-eye-ball"></div>
+	<div class="eye-ball eye-ball-right" id="right-eye-ball"></div>
+</body>
+<script type="text/javascript">
+	var lEye = document.getElementById("left-eye");
+	var rEye = document.getElementById("right-eye");
+	var lBall = document.getElementById("left-eye-ball");
+	var rBall = document.getElementById("right-eye-ball");
+
+	document.onmousemove = function(e) {
+		if(!e) e = window.event;
+		animateEyeBall(e.clientX, e.clientY);
+		
+		/**
+		 * mouseL 鼠标指针距离文档左侧的距离
+		 * mouseT 鼠标指针距离文档顶部的距离
+		 */
+		function animateEyeBall(mouseL, mouseT)
+		{
+			var mousePos = {left: mouseL, top: mouseT}; //鼠标坐标
+
+			setNewBallPos(lEye, lBall, mousePos);
+			setNewBallPos(rEye, rBall, mousePos);
+		}
+		
+		/**
+		 * eye 眼睛
+		 * ball 眼球
+		 * mousePos 鼠标位置
+		 */
+		function setNewBallPos(eye, ball, mousePos)
+		{
+			var r = eye.offsetWidth / 2; //eye半径
+			var oLeft = eye.offsetLeft + r; //eye中心距文档左侧的距离
+			var oTop = eye.offsetTop + r; //eye中心距文档顶部的距离
+
+			var angle = Math.atan2(-(mousePos.top - oTop), mousePos.left - oLeft); //mouse与eye中心之间的弧度
+			var mouseR = Math.sqrt(Math.pow(mousePos.top - oTop, 2) + Math.pow(mousePos.left - oLeft, 2)); //鼠标与eye中心的距离
+			var inEye = mouseR < r - 20; //鼠标是否在eye中
+
+			var ballOLeft = inEye ? mousePos.left :  oLeft + (r - 20) * Math.cos(angle); //眼球中心到文档左侧的距离
+			var ballOTop = inEye ? mousePos.top : oTop - (r - 20) * Math.sin(angle); //眼球中心到文档顶部的距离
+
+			ball.style.left =  ballOLeft - 15 + 'px'; //设置眼球左侧位置
+			ball.style.top = ballOTop - 15 + 'px'; //设置眼球右侧位置
+		}
+	};
+</script>
+</html>
